@@ -1,6 +1,19 @@
 import React from 'react';
 
-export default class Help extends React.Component {
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+
+const styles = theme => ({
+  paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+});
+
+class Help extends React.Component {
 	constructor() {
 		super();
 		this.test = this.test.bind(this);
@@ -11,15 +24,19 @@ export default class Help extends React.Component {
 	}
 
 	componentDidMount() {
-		window.setTimeout(() => console.log('help'), 1000);
+		window.setTimeout(() => console.log('Help'), 1000);
 	}
 
   render() {
     return (
-      <div className="Home">
-        <h2>Help</h2>
-        <button type="button" className="btn btn-primary" onClick={this.test}>Help</button>
-      </div>
+      <Paper className={this.props.classes.paper}> 
+    	<Typography variant="headline" component="h2">
+    		Help
+    	</Typography>
+    	<Button variant="contained" color="primary" onClick={this.test}>Help</Button>
+      </Paper>
     );
   }
 }
+
+export default withStyles(styles)(Help)
