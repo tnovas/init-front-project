@@ -1,13 +1,15 @@
-import App from './components';
 import React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
+import { Provider } from 'react-redux';
 
 import handlebars from 'handlebars';
 import fs from 'fs';
 import path from 'path';
 import isDocker from 'is-docker';
 import express from 'express';
+import App from './components';
+import Store from './store';
 
 const staticPath = !isDocker() ? process.env.RAZZLE_PUBLIC_DIR : path.join(__dirname, '../build/public');
 
@@ -18,12 +20,17 @@ server
   .disable('x-powered-by')
   .use(express.static(staticPath))
   .get('/*', (req, res) => {
-    const context = {};
-    const markup = renderToString(
-      <StaticRouter context={context} location={req.url}>
-        <App />
-      </StaticRouter>
-    );
+      const context = {};
+
+      const store = Store();
+
+      const markup = renderToString(
+          <Provider store={store}>
+              <StaticRouter context={context} location={req.url}>
+                  <App />
+              </StaticRouter>
+          </Provider>
+      );
 
     if (context.url) {
       res.redirect(context.url);
