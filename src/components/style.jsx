@@ -22,10 +22,4 @@ const theme = createMuiTheme({
   }
 });
 
-const style = (theme) => ({
-    link: {
-        padding: theme.spacing.unit,
-    }
-});
-
-export { theme, style };
+export default theme;

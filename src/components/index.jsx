@@ -1,7 +1,9 @@
 import React from 'react';
-import { Route, Link } from 'react-router-dom';
-import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
-import { theme, style } from './style';
+import { Route } from 'react-router-dom';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import theme from './style';
+
+import Navbar from './navbar';
 import Home from './home';
 import Help from './help';
 
@@ -9,9 +11,7 @@ class App extends React.Component {
     render() {
         return (
             <MuiThemeProvider theme={theme}>
-                <Link className={this.props.classes.link} to="/">Home</Link>
-                <Link className={this.props.classes.link} to="/help">Help</Link>
-
+                <Navbar />
                 <Route exact path="/" component={Home} />
                 <Route exact path="/help" component={Help} />
             </MuiThemeProvider>
@@ -19,4 +19,4 @@ class App extends React.Component {
     }
 }
 
-export default withStyles(style)(App);
+export default App;
