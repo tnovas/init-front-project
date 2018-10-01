@@ -1,8 +1,11 @@
 
 const style = (theme) => ({
-    root: {
-        padding: theme.spacing.unit * 4,
-        color: theme.palette.text.secondary,
+    paper: {
+        padding: theme.spacing.unit * 2,
+        textAlign: 'center'
+    },
+    typography: {
+        color: theme.palette.text.secondary
     }
 });
 
