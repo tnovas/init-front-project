@@ -1,6 +1,6 @@
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-import { renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
 import { SheetsRegistry } from 'react-jss/lib/jss';
 import JssProvider from 'react-jss/lib/JssProvider';
@@ -24,7 +24,6 @@ const server = express();
 server.use(express.static(staticPath));
 
 server.use((req, res) => {
-
       const sheetsRegistry = new SheetsRegistry();
 
       const sheetsManager = new Map();
@@ -37,7 +36,7 @@ server.use((req, res) => {
 
       const store = Store();
 
-      const markup = renderToString(
+      const markup = ReactDOMServer.renderToString(
               <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
                 <MuiThemeProvider theme={theme} sheetsManager={sheetsManager}>
                   <Provider store={store}>
@@ -50,13 +49,14 @@ server.use((req, res) => {
       );
 
       const css = sheetsRegistry.toString();
-
+      
     if (context.url) {
       res.redirect(context.url);
     } else {
       fs.readFile('./public/views/index.html', 'utf-8', function(error, source){
         var template = handlebars.compile(source);
-        var html = template({markup: markup, assets: assets, css: css});
+        var html = template({assets: assets, css: css});
+        html = html.replace('<div id="root"></div>', `<div id="root">${markup}</div>`);
         res.send(html);
       });
     }
