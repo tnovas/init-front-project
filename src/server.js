@@ -1,43 +1,64 @@
-import App from './components';
 import React from 'react';
 import { StaticRouter } from 'react-router-dom';
-import express from 'express';
 import { renderToString } from 'react-dom/server';
+import { Provider } from 'react-redux';
+import { SheetsRegistry } from 'react-jss/lib/jss';
+import JssProvider from 'react-jss/lib/JssProvider';
+import {  MuiThemeProvider, createGenerateClassName } from '@material-ui/core/styles';
+
+import handlebars from 'handlebars';
+import fs from 'fs';
+import path from 'path';
+import isDocker from 'is-docker';
+import express from 'express';
+import Store from './store';
+import Theme from './components/style';
+import App from './components';
+
+const staticPath = !isDocker() ? process.env.RAZZLE_PUBLIC_DIR : path.join(__dirname, '../build/public');
 
 const assets = require(process.env.RAZZLE_ASSETS_MANIFEST);
 
 const server = express();
-server
-  .disable('x-powered-by')
-  .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
-  .get('/*', (req, res) => {
-    const context = {};
-    const markup = renderToString(
-      <StaticRouter context={context} location={req.url}>
-        <App />
-      </StaticRouter>
-    );
+
+server.use(express.static(staticPath));
+
+server.use((req, res) => {
+
+      const sheetsRegistry = new SheetsRegistry();
+
+      const sheetsManager = new Map();
+
+      const theme = Theme;
+
+      const generateClassName = createGenerateClassName();
+
+      const context = {};
+
+      const store = Store();
+
+      const markup = renderToString(
+              <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
+                <MuiThemeProvider theme={theme} sheetsManager={sheetsManager}>
+                  <Provider store={store}>
+                      <StaticRouter context={context} location={req.url}>
+                          <App />
+                      </StaticRouter>
+                  </Provider>
+                </MuiThemeProvider>
+              </JssProvider>
+      );
+
+      const css = sheetsRegistry.toString();
 
     if (context.url) {
       res.redirect(context.url);
     } else {
-      res.status(200).send(
-        `<!doctype html>
-          <html lang="en">
-          <head>
-              <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-              <meta charset="utf-8" />
-              <title>Streamer Panel</title>
-              <meta name="viewport" content="width=device-width, initial-scale=1">
-              <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
-              <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-              <script src="${assets.client.js}" defer></script>
-          </head>
-          <body>
-              <div id="root">${markup}</div>
-          </body>
-        </html>`
-      );
+      fs.readFile('./public/views/index.html', 'utf-8', function(error, source){
+        var template = handlebars.compile(source);
+        var html = template({markup: markup, assets: assets, css: css});
+        res.send(html);
+      });
     }
   });
 
