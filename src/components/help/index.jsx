@@ -9,6 +9,8 @@ import style from './style';
 
 import { setValueConsole } from '../../actions';
 
+@connect(mapStateToProps)
+@withStyles(style)
 class Help extends React.Component {
     constructor(props) {
         super(props);
@@ -44,7 +46,4 @@ function mapStateToProps(state) {
     }
 }
 
-const states = connect(mapStateToProps)(Help);
-
-
-export default withStyles(style)(states);
+export default Help;

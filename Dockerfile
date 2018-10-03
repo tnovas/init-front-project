@@ -1,7 +1,7 @@
 FROM node:latest
 
-ADD ./ /
-WORKDIR /build
+ADD ./build /
+WORKDIR /
 
 CMD [ "node", "server.js" ]
 

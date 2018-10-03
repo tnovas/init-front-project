@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import style from './style';
 
+@connect(mapStateToProps)
+@withStyles(style)
 class Home extends React.Component {
     render() {
         return (
@@ -20,6 +22,4 @@ function mapStateToProps(state) {
     }
 }
 
-const states = connect(mapStateToProps)(Home);
-
-export default withStyles(style)(states);
+export default Home;

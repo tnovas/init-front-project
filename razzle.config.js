@@ -13,7 +13,10 @@ module.exports = {
     }
 
   	appConfig.plugins.push(
-            new webpack.DefinePlugin({ 'process.env.Variable': JSON.stringify(env.Variable) })
+            new webpack.DefinePlugin(
+              { 
+                'process.env.Variable': JSON.stringify(env.Variable)
+              })
 	);
 	
 	return appConfig;
