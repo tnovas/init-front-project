@@ -6,7 +6,12 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import { MuiThemeProvider, createGenerateClassName } from '@material-ui/core/styles';
 import configureStore from './store';
 import theme from './components/style';
-import App from './components';
+import Loadable from 'react-loadable';
+
+const App = Loadable({
+  loader: () => import('./components'),
+  loading: () => null
+});
 
 class Main extends React.Component {
   componentDidMount() {
