@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
@@ -9,9 +8,8 @@ import style from './style';
 
 import { setValueConsole } from '../../actions';
 
-@connect(mapStateToProps)
 @withStyles(style)
-class Help extends React.Component {
+export class Help extends React.Component {
     constructor(props) {
         super(props);
 
@@ -46,4 +44,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default Help;
+export default connect(mapStateToProps)(Help);
